@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
-using KModkit;
 using System.Text.RegularExpressions;
 using Rnd = UnityEngine.Random;
 
@@ -19,8 +18,7 @@ public class Top10Numbers : MonoBehaviour {
 	private int _moduleId;
 	private static readonly string[] Binary = {"0001", "0010", "0011", "0100", "0101", "0110", "1000", "1001", "1010", "1100"};
 	private int[] NumberPriority = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-	private int Stage, maxStage, DislikeCooldown = 8;
-	private int Tickdown = 0;
+	private int Stage, Stage2, maxStage, stageQueue, DislikeCooldown = 8;
 	public TextMesh[] Texts;
 	private List<int> StageNums = new List<int>(), StageAnswers = new List<int>(), IgnoreNums = new List<int>(), Answers = new List<int>();
 	private List<bool> StageBools = new List<bool>();
@@ -45,11 +43,11 @@ public class Top10Numbers : MonoBehaviour {
 	void HandlePress(KMSelectable btn)
 	{
 		int index = Array.IndexOf(Buttons, btn);
-		Answers.Add(index + 1);
 		Audio.PlaySoundAtTransform((index + 1).ToString(),btn.transform);
 		btn.AddInteractionPunch(.1f);
-		if (Stage == maxStage && !solved)
+		if (Stage == maxStage && Stage2 == maxStage && !solved)
 		{
+			Answers.Add(index + 1);
 			if (Answers.Join("") == StageAnswers.GetRange(0, Answers.Count).Join(""))
 			{
 				Debug.LogFormat("[Top 10 Numbers #{0}]: Correct! Number {1} is number {2}!", _moduleId, maxStage - Answers.Count + 1, Answers.Last());
@@ -68,9 +66,6 @@ public class Top10Numbers : MonoBehaviour {
             {
 				Debug.LogFormat("[Top 10 Numbers #{0}]: Oop. Number {1} is number {2}, not number {3}!", _moduleId, maxStage - Answers.Count + 1, StageAnswers[Answers.Count - 1], Answers.Last());
 				Module.HandleStrike();
-				Debug.Log(StageAnswers.GetRange(0, Answers.Count).Join(""));
-				Debug.Log(StageAnswers.Join(""));
-				Debug.Log(Answers.Join(""));
 				Answers = Answers.GetRange(0, Answers.Count - 1);
 				Texts[1].text = StageAnswers[Answers.Count].ToString();
                 if(StageBools[Answers.Count]) Texts[1].color = new Color32(255, 0, 0, 255);
@@ -94,11 +89,7 @@ public class Top10Numbers : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
-		if (!Application.isEditor)
-			maxStage = Bomb.GetSolvableModuleNames().Where(a => !ignoredModules.Contains(a)).Count();
-		else
-			//I WOULD LIKE TO MODIFY THE STAGE COUNT IN THE TESTHARNESS
-			maxStage = 10;
+		maxStage = Bomb.GetSolvableModuleNames().Where(a => !ignoredModules.Contains(a)).Count();
 		if (maxStage == 0)
 		{
 			Debug.LogFormat("[Top 10 Numbers #{0}]: Hey everyone! It's time for another top 10, and this week we're kic- Oh? You didn't put other modules on this bomb? *sigh* Autosolving...", _moduleId);
@@ -109,37 +100,39 @@ public class Top10Numbers : MonoBehaviour {
 		{
 			Debug.LogFormat("[Top 10 Numbers #{0}]: NOTE! PHRASE SUGGESTIONS OPEN! IF YOU WANT YOUR PHASE IN THIS MODULE, DM ME (Cooldoom5#0789) WITH THE PHRASE AND WHERE!", _moduleId);
 			Debug.LogFormat("[Top 10 Numbers #{0}]: Hey everyone! It's time for another top {1}, and this week we're kicking it old school! With a classic that is backkick, top {1} numbers, from 1 through 10!", _moduleId, maxStage);
-			GenerateStage();
+			StartCoroutine(TickDown());
+			stageQueue++;
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Stage < Bomb.GetSolvedModuleNames().Where(a => !ignoredModules.Contains(a)).Count() && !solved)
+		if (Stage2 < Bomb.GetSolvedModuleNames().Where(a => !ignoredModules.Contains(a)).Count() && !solved)
 		{
-			Stage++;
-			if (Stage != maxStage && Tickdown == 0)
-			{
-				Tickdown = 3;
-				GenerateStage();
-				StartCoroutine(TickDown());
-			}
-            else if (Stage != maxStage)
-            {
-				Texts[0].color = new Color32(247, 13, 186, 255);
-				Texts[0].text = maxStage.ToString();
-				Texts[1].text = "-";
-			}
+			Stage2++;
+			if (Stage2 != maxStage)
+				stageQueue++;
 		}
 	}
 	IEnumerator TickDown()
     {
-		while(Tickdown != 0)
+		while (true)
         {
-			Tickdown--;
-			yield return new WaitForSeconds(1f);
-        }
-    }
+			yield return null;
+			if (stageQueue > 0)
+            {
+				GenerateStage();
+				yield return new WaitForSeconds(1f);
+				Stage++;
+				stageQueue--;
+			}
+			if (Stage == maxStage && Stage2 == maxStage)
+				break;
+		}
+		Texts[0].color = new Color32(247, 13, 186, 255);
+		Texts[0].text = maxStage.ToString();
+		Texts[1].text = "-";
+	}
 
 	void GenerateStage()
     {
@@ -290,5 +283,57 @@ public class Top10Numbers : MonoBehaviour {
 			if (List[i] == Count) TotalCount++;
         }
 		return TotalCount;
+    }
+
+	//twitch plays
+	#pragma warning disable 414
+	private readonly string TwitchHelpMessage = @"!{0} press 10 7 9 8 7 9 6 4 5 4 4 2 3 5 2 1 1 5 [Inputs the specified numbers]";
+	#pragma warning restore 414
+	IEnumerator ProcessTwitchCommand(string command)
+	{
+		string[] parameters = command.Split(' ');
+		if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+		{
+			if (parameters.Length == 1)
+				yield return "sendtochaterror Please specify at least one number!";
+			else
+			{
+				for (int i = 1; i < parameters.Length; i++)
+				{
+					int temp = -1;
+					if (!int.TryParse(parameters[i], out temp))
+					{
+						yield return "sendtochaterror!f The specified number '" + parameters[i] + "' is invalid!";
+						yield break;
+					}
+					if (temp < 1 || temp > 10)
+					{
+						yield return "sendtochaterror The specified number '" + parameters[i] + "' is invalid!";
+						yield break;
+					}
+				}
+				if (Stage != maxStage || Stage2 != maxStage)
+                {
+					yield return "sendtochaterror The module is not ready for input!";
+					yield break;
+				}
+				yield return null;
+				for (int i = 1; i < parameters.Length; i++)
+				{
+					Buttons[int.Parse(parameters[i]) - 1].OnInteract();
+					yield return new WaitForSeconds(.3f);
+				}
+			}
+		}
+	}
+
+	IEnumerator TwitchHandleForcedSolve()
+    {
+		while (Stage != maxStage || Stage2 != maxStage) yield return true;
+		while (!solved)
+        {
+			Buttons[StageAnswers[Answers.Count] - 1].OnInteract();
+			yield return new WaitForSeconds(.3f);
+		}
     }
 }
