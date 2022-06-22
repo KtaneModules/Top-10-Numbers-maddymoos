@@ -20,6 +20,7 @@ public class Top10Numbers : MonoBehaviour {
 	private static readonly string[] Binary = {"0001", "0010", "0011", "0100", "0101", "0110", "1000", "1001", "1010", "1100"};
 	private int[] NumberPriority = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	private int Stage, maxStage, DislikeCooldown = 8;
+	private int Tickdown = 0;
 	public TextMesh[] Texts;
 	private List<int> StageNums = new List<int>(), StageAnswers = new List<int>(), IgnoreNums = new List<int>(), Answers = new List<int>();
 	private List<bool> StageBools = new List<bool>();
@@ -117,9 +118,13 @@ public class Top10Numbers : MonoBehaviour {
 		if (Stage < Bomb.GetSolvedModuleNames().Where(a => !ignoredModules.Contains(a)).Count() && !solved)
 		{
 			Stage++;
-			if (Stage != maxStage)
+			if (Stage != maxStage && Tickdown == 0)
+			{
+				Tickdown = 3;
 				GenerateStage();
-            else
+				StartCoroutine(TickDown());
+			}
+            else if (Stage != maxStage)
             {
 				Texts[0].color = new Color32(247, 13, 186, 255);
 				Texts[0].text = maxStage.ToString();
@@ -127,6 +132,14 @@ public class Top10Numbers : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator TickDown()
+    {
+		while(Tickdown != 0)
+        {
+			Tickdown--;
+			yield return new WaitForSeconds(1f);
+        }
+    }
 
 	void GenerateStage()
     {

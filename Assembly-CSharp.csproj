@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{21B20798-3CCA-5500-1942-1CB032CD2E44}</ProjectGuid>
+    <ProjectGuid>{9C2757FB-DB45-C38B-006E-06620604DD57}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -268,10 +268,10 @@
  <HintPath>E:/UnityUnityUnity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
  </Reference>
  <Reference Include="KMFramework">
- <HintPath>E:/Unity Stuff/top 10 numbers/Assets/Plugins/Managed/KMFramework.dll</HintPath>
+ <HintPath>E:/Unity Stuff/top 10 numbers/Top 10 Numbers/Assets/Plugins/Managed/KMFramework.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>E:/Unity Stuff/top 10 numbers/Assets/Plugins/Managed/Newtonsoft.Json.dll</HintPath>
+ <HintPath>E:/Unity Stuff/top 10 numbers/Top 10 Numbers/Assets/Plugins/Managed/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Analytics">
  <HintPath>C:/Users/amp82/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/UnityEngine.Analytics.dll</HintPath>

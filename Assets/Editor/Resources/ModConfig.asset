@@ -14,17 +14,22 @@ MonoBehaviour:
   id: top10numbers
   title: Top 10 Numbers
   author: Cooldoom5
-  description: Hey everyone, it's time for another "Top 10", and this week we're kicking
-    it old-school, with a classic that is backkick, top 10 numbers from 1 through
-    10! Starting us off at number 10, it's number 7! At number 9, it's number 8! And
-    at number 7, it's number 9, but look out 7, at number 6, it's number 4. Quick
-    recap, because number 9 was number 8, but you'll need to know the context for
-    this next number, because it's number 5, for number 4! And at number 4, it's number
-    2, but number 3 this week is also number 5! That's right folks, there are two
-    number 5s, a number 6, and number 3. In your face number 3, you didn't even make
-    the top 10! And at number 2, it's number 1. So close 1, but there can only be
-    one number 1, and that one number at number 1 is number 5! Heck you number 1 and
-    3, your numbers are garbage!
-  version: 1
+  description: 'Hey everyone, it''s time for another "Top 10", and this week we''re
+    kicking it old-school, with a classic that is backkick, top 10 numbers from 1
+    through 10! Starting us off at number 10, it''s number 7! At number 9, it''s number
+    8! And at number 7, it''s number 9, but look out 7, at number 6, it''s number
+    4. Quick recap, because number 9 was number 8, but you''ll need to know the context
+    for this next number, because it''s number 5, for number 4! And at number 4, it''s
+    number 2, but number 3 this week is also number 5! That''s right folks, there
+    are two number 5s, a number 6, and number 3. In your face number 3, you didn''t
+    even make the top 10! And at number 2, it''s number 1. So close 1, but there can
+    only be one number 1, and that one number at number 1 is number 5! Heck you number
+    1 and 3, your numbers are garbage!
+
+
+    Manual can be found at: ktane.timwi.de
+
+    Module ID: top10nums'
+  version: 1.0.1
   outputFolder: E:\Setam\steamapps\common\Keep Talking and Nobody Explodes\mods
-  previewImage: {fileID: 2800000, guid: 9aab404b008a5fd488751e30a7da4b0a, type: 3}
+  previewImage: {fileID: 2800000, guid: 77a33e770a9c1ac4584cbfa40752e9a9, type: 3}
